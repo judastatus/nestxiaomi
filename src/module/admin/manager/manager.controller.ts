@@ -1,9 +1,22 @@
-import { Controller,Get } from '@nestjs/common';
+import { Controller,Get, Render } from '@nestjs/common';
 
 @Controller('admin/manager')
 export class ManagerController {
     @Get()
+    @Render('admin/manager/index')
     index() {
-        return "我是后台的管理员页面";
+        return {};
+    }
+
+    @Get("add")
+    @Render('admin/manager/add')
+    addManger() {
+        return {};
+    }
+
+    @Get("edit")
+    @Render('admin/manager/edit')
+    editManger() {
+        return {};
     }
 }
