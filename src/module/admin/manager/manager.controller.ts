@@ -8,6 +8,7 @@ export class ManagerController {
         return {};
     }
 
+   
     @Get("add")
     @Render('admin/manager/add')
     addManger() {
