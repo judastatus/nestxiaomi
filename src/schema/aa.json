@@ -1,0 +1,20 @@
+[
+    {
+        "username":"zhangsan",
+        "password":"123456",
+        "mobile":"15911111111",
+        "email":"zhangsan@gmail.com",
+        "status":1,
+        "is_super":0,
+        "add_time":1604302536
+      },
+      {
+        "username":"lisi",
+        "password":"123456",
+        "mobile":"15922222222",
+        "email":"lisi@gmail.com",
+        "status":1,
+        "is_super":0,
+        "add_time":1604302536
+      }
+]

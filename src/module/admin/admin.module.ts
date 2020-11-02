@@ -1,3 +1,6 @@
+import { AdminService } from './../../service/admin/admin.service';
+import { AdminSchema } from './../../schema/admin.schema';
+import { MongooseModule, Schema } from '@nestjs/mongoose';
 import { Module, NestModule,MiddlewareConsumer } from '@nestjs/common';
 import { MainController } from './main/main.controller';
 import { LoginController } from './login/login.controller';
@@ -6,8 +9,11 @@ import { ToolsService } from '../../service/tools/tools.service';
 
 
 @Module({
+  imports:[MongooseModule.forFeature([
+    {name:'Admin',schema:AdminSchema, collection:'admin' }
+  ])],
   controllers: [MainController, LoginController, ManagerController],
-  providers:[ToolsService]
+  providers:[ToolsService, AdminService]
 })
 export class AdminModule {}
 

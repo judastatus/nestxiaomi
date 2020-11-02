@@ -4,7 +4,6 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 export class AdminauthMiddleware implements NestMiddleware {
   use(req: any, res: any, next: () => void) {
 
-    console.log("admin 中间件");
     var pathname=req.baseUrl;  //获取访问的地址
     var userinfo=req.session.userinfo;
     if(userinfo && userinfo.username){
