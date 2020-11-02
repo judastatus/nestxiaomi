@@ -22,4 +22,19 @@ export class ToolsService {
     getMd5(str:string){
         return md5(str);
     }
+
+    // 成功的跳转
+    async success(res,redirectUrl){
+        await res.render('admin/public/success',{                          
+            redirectUrl:redirectUrl
+        })
+    }
+
+    // 失败的跳转
+    async error(res,message,redirectUrl){
+        await res.render('admin/public/error',{
+            message:message,
+            redirectUrl:redirectUrl
+        })
+    }
 }

@@ -11,6 +11,6 @@ export class AdminService {
     }
 
     async find(json={}){
-        return await this.adminModule.find();
+        return await this.adminModule.find(json);
     } 
 }
