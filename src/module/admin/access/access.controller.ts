@@ -3,7 +3,7 @@ import { Config } from './../../../config/config';
 import { ToolsService } from './../../../service/tools/tools.service';
 import { AccessService } from './../../../service/access/access.service';
 
-import { Controller, Get, Render, Post, Body, Response } from '@nestjs/common';
+import { Controller, Get, Render, Post, Body, Response,Query } from '@nestjs/common';
 
 import * as mongoose from 'mongoose';
 
@@ -67,6 +67,52 @@ export class AccessController {
         await this.accessService.add(body);
 
         this.toolsService.success(res, `/${Config.adminPath}/access`);
+    }
+
+    @Get('edit')
+    @Render('admin/access/edit')
+    async edit(@Query() query){
+        //获取模块列表
+        var result=await this.accessService.find({"module_id":"0"});
+
+        var accessResult=await this.accessService.find({"_id":query.id});
+
+        return {
+            list:accessResult[0],
+            moduleList:result
+        };
+    }
+
+    @Post('doEdit')
+    async doEdit(@Body() body,@Response() res){
+
+        console.log(body);
+        try {
+            var module_id = body.module_id;
+            var _id = body._id;
+    
+            if(module_id!=0){
+                body.module_id=mongoose.Types.ObjectId(module_id);   //注意
+            }
+    
+           await this.accessService.update({"_id":_id},body);
+           this.toolsService.success(res, `/${Config.adminPath}/access`);
+
+        } catch (error) {
+             this.toolsService.error(res, '非法请求',`/${Config.adminPath}/access/edit?id=${_id}`);
+        }
+    }
+
+    @Get('delete')    
+    async delete(@Query() query,@Response() res){
+
+        try {
+            await this.accessService.delete({"_id":query.id});
+            this.toolsService.success(res, `/${Config.adminPath}/access`);
+        } catch (error) {
+            this.toolsService.error(res, '非法请求',`/${Config.adminPath}/access`);
+        }
+        
     }
 
 }
