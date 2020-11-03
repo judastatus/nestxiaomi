@@ -1,20 +1,14 @@
 [
-    {
-        "username":"zhangsan",
-        "password":"123456",
-        "mobile":"15911111111",
-        "email":"zhangsan@gmail.com",
-        "status":1,
-        "is_super":0,
-        "add_time":1604302536
-      },
-      {
-        "username":"lisi",
-        "password":"123456",
-        "mobile":"15922222222",
-        "email":"lisi@gmail.com",
-        "status":1,
-        "is_super":0,
-        "add_time":1604302536
-      }
+  {
+    "status": 1,
+    "title": "销售部门",
+    "description": "销售部门的描述",
+    "add_time": 1604302536
+  },
+  {
+    "status": 1,
+    "title": "市场部门",
+    "description": "市场部门的描述",
+    "add_time": 1604302536
+  }
 ]
