@@ -86,9 +86,8 @@ export class RoleController {
     @Get('auth')
     @Render('admin/role/auth')
     async roleAuth(@Query() query) {
-        //1、在access表中找出  module_id=0的数据 
-        //2、让access表和access表关联    条件：找出access表中module_id等于_id的数据
 
+        //1、获取全部的权限
         var role_id = query.id;
         var result = await this.accessService.getModel().aggregate([
             {
@@ -106,11 +105,42 @@ export class RoleController {
             }
         ]);
 
-        console.log(result);
+        //2、查询当前角色拥有的权限（查询当前角色的权限id） 把查找到的数据放在数组中
+
+
+        var accessResult = await this.roleAccessService.find({ "role_id": role_id });
+
+        var roleAccessArray = [];
+        accessResult.forEach(value => {
+            roleAccessArray.push(value.access_id.toString());
+        });
+
+        console.log(roleAccessArray);
+
+        // 3、循环遍历所有的权限数据，判断当前权限是否在角色权限的数组中,如果是的话给当前数据加入checked属性
+
+        for (var i = 0; i < result.length; i++) {
+
+            if (roleAccessArray.indexOf(result[i]._id.toString()) != -1) {
+                result[i].checked = true;
+            }
+
+
+            for (var j = 0; j < result[i].items.length; j++) {
+
+                if (roleAccessArray.indexOf(result[i].items[j]._id.toString()) != -1) {
+                    result[i].items[j].checked = true;
+                }
+            }
+        }
+
+
         return {
             list: result,
             role_id: role_id
         };
+
+
     }
 
     @Post('doAuth')
@@ -127,13 +157,13 @@ export class RoleController {
 
         //2、把当前角色对应的所有权限增加到role_access表里面
 
-        for(var i=0;i<access_node.length;i++){
+        for (var i = 0; i < access_node.length; i++) {
 
             await this.roleAccessService.add({
-                role_id:role_id,
-                access_id:access_node[i]
+                role_id: role_id,
+                access_id: access_node[i]
             })
-        }        
+        }
         this.toolsService.success(res, `/${Config.adminPath}/role/auth?id=${role_id}`);
 
 
