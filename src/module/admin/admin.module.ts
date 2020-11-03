@@ -25,7 +25,8 @@ import { AccessController } from './access/access.controller';
     {name: 'RoleAccess', schema:RoleAccessSchema, collection:'role_access'}
   ])],
   controllers: [MainController, LoginController, ManagerController, RoleController, AccessController],
-  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService]
+  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService],
+  exports:[AdminService,RoleService,AccessService,RoleAccessService]
 })
 export class AdminModule {}
 
