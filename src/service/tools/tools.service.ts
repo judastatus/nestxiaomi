@@ -9,7 +9,7 @@ export class ToolsService {
     // 获取验证码
     getCaptcha() {
         var captcha = svgCaptcha.create({
-            size: 4,
+            size: 1, // 验证码个数
             fontSize: 50,
             width: 100,
             height: 34,

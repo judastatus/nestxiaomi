@@ -1,8 +1,9 @@
+import { Config } from './../../../config/config';
 import { AdminService } from './../../../service/admin/admin.service';
 import { ToolsService } from './../../../service/tools/tools.service';
 import { Body, Controller, Get, Post, Render, Request, Response } from '@nestjs/common';
 
-@Controller('admin/login')
+@Controller(`${Config.adminPath}/login`)
 export class LoginController {
 
     constructor(private toolsService: ToolsService, private adminService: AdminService) { }
@@ -32,7 +33,7 @@ export class LoginController {
             var username: string = body.username;
             var password: string = body.password;
             if (username == "" || password.length < 6) {
-                this.toolsService.error(res, "用户名 或者密码不合法", "/admin/login");
+                this.toolsService.error(res, "用户名或者密码不合法", `/${Config.adminPath}/login`);
             } else {
 
                 if (code.toLowerCase() == req.session.code.toLowerCase()) {
@@ -42,15 +43,15 @@ export class LoginController {
                         console.log('登录成功');
                         console.log(userResult);
                         req.session.userinfo = userResult[0];
-                        this.toolsService.success(res, "/admin/main");
+                        this.toolsService.success(res, `/${Config.adminPath}/main`);
 
 
                     } else {
-                        this.toolsService.error(res, "用户名或者密码不正确", "/admin/login");
+                        this.toolsService.error(res, "用户名或者密码不正确", `/${Config.adminPath}/login`);
 
                     }
                 } else {
-                    this.toolsService.error(res, "验证码不正确", "/admin/login");
+                    this.toolsService.error(res, "验证码不正确", `/${Config.adminPath}/login`);
 
 
 
@@ -58,7 +59,7 @@ export class LoginController {
             }
         } catch (error) {
             console.log(error);
-            res.redirect('/admin/login');
+            res.redirect(`/${Config.adminPath}/login`);
         }
     }
 
@@ -66,7 +67,7 @@ export class LoginController {
 
     loginOut(@Request() req,@Response() res){
         req.session.userinfo=null;
-        res.redirect('/admin/login');
+        res.redirect(`/${Config.adminPath}/login`);
 
     }
 }
