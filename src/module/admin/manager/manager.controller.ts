@@ -2,7 +2,7 @@ import { AdminService } from './../../../service/admin/admin.service';
 import { ToolsService } from './../../../service/tools/tools.service';
 import { RoleService } from './../../../service/role/role.service';
 import { Config } from './../../../config/config';
-import { Controller,Get, Render,Post, Body,Response } from '@nestjs/common';
+import { Controller,Get, Render,Post, Body,Response, Query } from '@nestjs/common';
 
 @Controller(`${Config.adminPath}/manager`)
 export class ManagerController {
@@ -23,7 +23,7 @@ export class ManagerController {
             }
         ]);
 
-        console.log(JSON.stringify(result));
+        // console.log(JSON.stringify(result));
 
         return {
             adminResult:result
@@ -65,7 +65,56 @@ export class ManagerController {
 
     @Get("edit")
     @Render('admin/manager/edit')
-    editManger() {
-        return {};
+    async editManger(@Query() query) {
+        console.log(query);
+
+        var adminResult = await this.adminService.find({_id:query.id});
+        console.log(adminResult);
+        var roleResult = await this.roleService.find();
+
+        return {
+            adminResult:adminResult[0],
+            roleList:roleResult
+        };
+    }
+
+    @Post('doEdit')
+    async doEdit(@Body() body, @Response() res) {
+        console.log(body);     
+        var id=body._id;
+        var password=body.password;
+        var mobile=body.mobile;
+        var email=body.email;
+        var role_id=body.role_id;  
+        if(password!=''){
+           if(password.length<6){
+                this.toolsService.error(res, '密码长度不合法', `/${Config.adminPath}/manager/edit?id=${id}`);
+                return;
+
+           }else{
+                password=this.toolsService.getMd5(password);
+                await this.adminService.update({"_id":id},{
+                    mobile,
+                    email,
+                    role_id,
+                    password
+                });
+           }
+
+        } else{
+            await this.adminService.update({"_id":id},{
+                mobile,
+                email,
+                role_id
+            });
+
+        }
+        this.toolsService.success(res, `/${Config.adminPath}/manager`);
+    }
+
+    @Get('delete')  
+    async delete(@Query() query,@Response() res) {
+        var result = await this.adminService.delete({ "_id": query.id });     
+        this.toolsService.success(res, `/${Config.adminPath}/manager`);
     }
 }
