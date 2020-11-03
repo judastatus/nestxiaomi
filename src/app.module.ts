@@ -9,7 +9,6 @@ import { MongooseModule} from '@nestjs/mongoose'
 import {AdminauthMiddleware} from './middleware/adminauth.middleware'
 
 
-
 @Module({
   imports: [AdminModule, DefaultModule, ApiModule,
   MongooseModule.forRoot('mongodb://127.0.0.1:27017/nestxiaomi', {useNewUrlParser:true})

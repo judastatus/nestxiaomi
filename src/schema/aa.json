@@ -1,14 +1,12 @@
 [
   {
+    "sort": 100,
     "status": 1,
-    "title": "销售部门",
-    "description": "销售部门的描述",
-    "add_time": 1604302536
-  },
-  {
-    "status": 1,
-    "title": "市场部门",
-    "description": "市场部门的描述",
-    "add_time": 1604302536
+    "module_name": "管理员管理",
+    "description": "管理员管理的描述",
+    "add_time": 1604302536000,
+    "type":1,
+    "url":"",
+    "module_id":"0"
   }
 ]
