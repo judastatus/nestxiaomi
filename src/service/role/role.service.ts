@@ -48,4 +48,14 @@ export class RoleService {
         }
     }
 
+    // 删除多个
+    async deleteMany(json){
+        try {
+            var result=await this.roleModel.deleteMany(json);          
+            return result;
+        } catch (error) {
+            return null;
+        }
+    }
+
 }
