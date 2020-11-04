@@ -15,6 +15,7 @@ import { ManagerController } from './manager/manager.controller';
 import { ToolsService } from '../../service/tools/tools.service';
 import { RoleController } from './role/role.controller';
 import { AccessController } from './access/access.controller';
+import { FocusController } from './focus/focus.controller';
 
 
 @Module({
@@ -24,7 +25,7 @@ import { AccessController } from './access/access.controller';
     {name:'Access', schema:AccessSchema, collection:'access'},
     {name: 'RoleAccess', schema:RoleAccessSchema, collection:'role_access'}
   ])],
-  controllers: [MainController, LoginController, ManagerController, RoleController, AccessController],
+  controllers: [MainController, LoginController, ManagerController, RoleController, AccessController, FocusController],
   providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService],
   exports:[AdminService,RoleService,AccessService,RoleAccessService]
 })
