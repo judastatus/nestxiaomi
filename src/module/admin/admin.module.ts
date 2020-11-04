@@ -1,3 +1,5 @@
+import { FocusService } from './../../service/focus/focus.service';
+import { FocusSchema } from './../../schema/focus.schema';
 import { RoleAccessService } from './../../service/role-access/role-access.service';
 import { RoleAccessSchema } from './../../schema/role_access.schema';
 import { AccessService } from './../../service/access/access.service';
@@ -23,10 +25,11 @@ import { FocusController } from './focus/focus.controller';
     {name:'Admin',schema:AdminSchema, collection:'admin' },
     {name:'Role', schema:RoleSchema, collection:'role'},
     {name:'Access', schema:AccessSchema, collection:'access'},
-    {name: 'RoleAccess', schema:RoleAccessSchema, collection:'role_access'}
+    {name:'RoleAccess', schema:RoleAccessSchema, collection:'role_access'},
+    {name:'Focus', schema:FocusSchema,collection:'focus'}
   ])],
   controllers: [MainController, LoginController, ManagerController, RoleController, AccessController, FocusController],
-  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService],
+  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService,FocusService],
   exports:[AdminService,RoleService,AccessService,RoleAccessService]
 })
 export class AdminModule {}
