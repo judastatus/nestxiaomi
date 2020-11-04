@@ -32,7 +32,7 @@ export class RoleController {
 
     @Post('doAdd')
     async doAdd(@Body() body, @Response() res) {
-        console.log('doadd doadd');
+        console.log('role doadd doadd');
         console.log(body);
 
         if (body.title != '') {
@@ -144,26 +144,27 @@ export class RoleController {
     }
 
     @Post('doAuth')
-    async doAuth(@Body() body, @Response() res) {
+    async doAuth(@Body() body,@Response() res) {
+       
         console.log(body);
 
-        var role_id = body.role_id;
+        var role_id=body.role_id;
 
-        var access_node = body.access_node;
-
+        var access_node=body.access_node;
+         
         //1、删除当前角色下面的所有权限
 
-        await this.roleService.deleteMany({ "role_id": role_id });
+        await this.roleAccessService.deleteMany({"role_id":role_id});
 
         //2、把当前角色对应的所有权限增加到role_access表里面
 
-        for (var i = 0; i < access_node.length; i++) {
+        for(var i=0;i<access_node.length;i++){
 
             await this.roleAccessService.add({
-                role_id: role_id,
-                access_id: access_node[i]
+                role_id:role_id,
+                access_id:access_node[i]
             })
-        }
+        }        
         this.toolsService.success(res, `/${Config.adminPath}/role/auth?id=${role_id}`);
 
 

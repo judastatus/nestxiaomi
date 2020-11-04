@@ -59,7 +59,8 @@ export class AccessController {
 
     @Post('doAdd')
     async doAddAccess(@Body() body, @Response() res) {
-
+        console.log('access doAdd');
+        console.log(body);
         var module_id = body.module_id;
         if (module_id != 0) {
             body.module_id = mongoose.Types.ObjectId(module_id);   //注意

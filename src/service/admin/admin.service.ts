@@ -74,7 +74,7 @@ export class AdminService {
 
         var userinfo = req.session.userinfo;
         var role_id = userinfo.role_id;
-        if (userinfo.is_super == 1 || pathname == 'login/loginOut' || pathname == "main/welcome") {
+        if (userinfo.is_super == 1 ||  pathname == "main" ||  pathname == "login" ||  pathname == "login/doLogin" ||  pathname == 'login/logout' || pathname == "main/welcome") {
             return true;
         }
 
@@ -87,7 +87,7 @@ export class AdminService {
             roleAccessArray.push(value.access_id.toString());
         });
 
-        console.log(roleAccessArray);
+        console.log(roleAccessArray.toString);
 
         //   3、获取当前访问的url 对应的权限id
 
