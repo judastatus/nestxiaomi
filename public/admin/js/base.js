@@ -34,6 +34,19 @@ var app={
 			var flag=confirm('您确定要删除吗?');
 			return flag;
 		})
+	},
+	// 轮播图 修改状态
+	changeStatus(el,model,fields,id){
+		
+		$.get('/admin/main/changeStatus',{id:id,model:model,fields:fields},function(data){			
+			if(data.success){
+				if(el.src.indexOf('yes')!=-1){
+					el.src='/admin/images/no.gif';
+				}else{
+					el.src='/admin/images/yes.gif';
+				}
+			}
+		})
 	}
 
 }
