@@ -11,6 +11,7 @@
                         <th>分类</th>
                         <th>图片</th>
                         <th>跳转地址</th>
+                        <th class="text-center">排序</th>
                         <th class="text-center">状态</th>
 
                         <th class="text-center">操作</th>
@@ -19,20 +20,28 @@
                 <tbody>
                     <%for(var i=0;i<focusList.length;i++){%>
                     <tr>
-                         <td><%=focusList[i].title%></td>
-                         <td><%=focusList[i].type%></td>
-                         <td><img src="/<%=focusList[i].focus_img%>" width="80"/></td>
-                         <td><%=focusList[i].link%></td>
-                         <td align="center">
-                            <%if(focusList[i].status==1){%>
-                                <img src="/admin/images/yes.gif" onclick="app.changeStatus(this,'focus','status','<%=focusList[i]._id%>')" />
+                        <td><%=focusList[i].title%></td>
+                        <td><%=focusList[i].type%></td>
+                        <td><img src="/<%=focusList[i].focus_img%>" width="80" /></td>
+                        <td><%=focusList[i].link%></td>
+                        <td class="text-center"><span
+                                onclick="app.editNum(this,'focus','sort','<%=focusList[i]._id%>')"><%=focusList[i].sort%></span>
+                        </td>
 
-                             <%}else{%>
-                                <img src="/admin/images/no.gif" onclick="app.changeStatus(this,'focus','status','<%=focusList[i]._id%>')"  />
+                        <td align="center">
+                            <%if(focusList[i].status==1){%>
+                            <img src="/admin/images/yes.gif"
+                                onclick="app.changeStatus(this,'focus','status','<%=focusList[i]._id%>')" />
+
+                            <%}else{%>
+                            <img src="/admin/images/no.gif"
+                                onclick="app.changeStatus(this,'focus','status','<%=focusList[i]._id%>')" />
                             <%}%>
 
                          </td>
-                         <td class="text-center"><a href="/<%=config.adminPath%>/focus/edit?id=<%=focusList[i]._id%>">修改</a> 　<a class="delete" href="/<%=config.adminPath%>/focus/delete?id=<%=focusList[i]._id%>">删除</a></td>
+                         <td class="text-center"><a href="/<%=config.adminPath%>/focus/edit?id=<%=focusList[i]._id%>">修改</a>
+                            　<a class="delete"
+                                href="/<%=config.adminPath%>/focus/delete?id=<%=focusList[i]._id%>">删除</a></td>
                     </tr>
 
                     <%}%>

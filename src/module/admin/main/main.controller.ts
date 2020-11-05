@@ -7,7 +7,7 @@ import { Controller, Get, Request, Render, Query } from '@nestjs/common';
 @Controller(`${Config.adminPath}/main`)
 export class MainController {
 
-    constructor(private accessService: AccessService, private roleAccessService: RoleAccessService, private focusService:FocusService) {
+    constructor(private accessService: AccessService, private roleAccessService: RoleAccessService, private focusService: FocusService) {
 
     }
 
@@ -91,10 +91,10 @@ export class MainController {
         var fields = query.fields;   //要修改的字段   status
 
         var json;
-        var focusResult = await this[model].find({ "_id": id });
+        var modelResult = await this[model].find({ "_id": id });
 
-        if (focusResult.length > 0) {
-            var tempFields = focusResult[0][fields];
+        if (modelResult.length > 0) {
+            var tempFields = modelResult[0][fields];
 
             tempFields == 1 ? json = { [fields]: 0 } : json = { [fields]: 1 };   //es6的属性名表达式
 
@@ -111,6 +111,35 @@ export class MainController {
             };
         }
 
+    }
+
+    //更新数量
+    @Get('editNum')
+    async editNum(@Query() query) {
+
+        var id = query.id; /*更新的 id*/
+        var model = query.model + 'Service'; /*更新的model */
+        var fields = query.fields; /*更新的字段  如:sort */
+        var num = query.num; /*数量*/
+
+        var modelResult = await this[model].find({ "_id": id });
+
+        if (modelResult.length > 0) {
+            var json = {
+                [fields]: num
+            };
+            console.log(json);
+            await this[model].update({ "_id": id }, json);
+            return {
+                success: true,
+                message: '修改成功'
+            };
+        } else {
+            return {
+                success: false,
+                message: '传入参数错误'
+            };
+        }
     }
 
 }
