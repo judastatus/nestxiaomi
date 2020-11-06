@@ -1,3 +1,4 @@
+import { GoodsTypeAttributeService } from './../../../service/goods-type-attribute/goods-type-attribute.service';
 import { GoodsTypeService } from './../../../service/goods-type/goods-type.service';
 import { FocusService } from './../../../service/focus/focus.service';
 import { RoleAccessService } from './../../../service/role-access/role-access.service';
@@ -8,7 +9,8 @@ import { Controller, Get, Request, Render, Query } from '@nestjs/common';
 @Controller(`${Config.adminPath}/main`)
 export class MainController {
 
-    constructor(private accessService: AccessService, private roleAccessService: RoleAccessService, private focusService: FocusService,private goodsTypeService:GoodsTypeService) {
+    constructor(private accessService: AccessService, private roleAccessService: RoleAccessService, private focusService: FocusService,private goodsTypeService:GoodsTypeService,
+        private goodsTypeAttributeService:GoodsTypeAttributeService) {
 
     }
     
