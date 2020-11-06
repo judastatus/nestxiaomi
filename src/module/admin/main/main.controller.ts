@@ -1,3 +1,4 @@
+import { GoodsTypeService } from './../../../service/goods-type/goods-type.service';
 import { FocusService } from './../../../service/focus/focus.service';
 import { RoleAccessService } from './../../../service/role-access/role-access.service';
 import { AccessService } from './../../../service/access/access.service';
@@ -7,9 +8,10 @@ import { Controller, Get, Request, Render, Query } from '@nestjs/common';
 @Controller(`${Config.adminPath}/main`)
 export class MainController {
 
-    constructor(private accessService: AccessService, private roleAccessService: RoleAccessService, private focusService: FocusService) {
+    constructor(private accessService: AccessService, private roleAccessService: RoleAccessService, private focusService: FocusService,private goodsTypeService:GoodsTypeService) {
 
     }
+    
 
     @Get('welcome')
     @Render('admin/main/welcome')
