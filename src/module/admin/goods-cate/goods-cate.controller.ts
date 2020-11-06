@@ -54,7 +54,7 @@ export class GoodsCateController {
     async doAdd(@Body() body, @UploadedFile() file, @Response() res) {
 
         var pid = body.pid;
-        let saveDir = this.toolsService.uploadFile(file);
+        let { saveDir, uploadDir } = this.toolsService.uploadFile(file);
         try {
             if (pid != 0) {
                 body.pid = mongoose.Types.ObjectId(pid);   //注意
@@ -63,11 +63,17 @@ export class GoodsCateController {
             await this.goodsCateService.add(Object.assign(body, {
                 cate_img: saveDir
             }));
+            //缩略图
+            if (uploadDir) {
+                this.toolsService.jimpImg(uploadDir);
+            }
+
             this.toolsService.success(res, `/${Config.adminPath}/goodsCate`);
 
         } catch (error) {
             console.log(error);
             this.toolsService.error(res, '非法请求', `/${Config.adminPath}/goodsCate/add`);
+
         }
     }
 
@@ -100,30 +106,34 @@ export class GoodsCateController {
         let id = body._id;
         let pid = body.pid;
         try {
-            
+
             if (pid != 0) {
                 body.pid = mongoose.Types.ObjectId(pid);   //注意
             }
 
             if (file) {
 
-                let saveDir = this.toolsService.uploadFile(file);
+                let { saveDir, uploadDir } = this.toolsService.uploadFile(file);
                 await this.goodsCateService.update({ "_id": id }, Object.assign(body, {
                     cate_img: saveDir
                 }));
+                //生成缩略图
+                if (uploadDir) {
+                    this.toolsService.jimpImg(uploadDir);
+                }
 
             } else {
                 await this.goodsCateService.update({ "_id": id }, body);
             }
             this.toolsService.success(res, `/${Config.adminPath}/goodsCate`);
         } catch (error) {
-            this.toolsService.error(res, '修改失败',`/${Config.adminPath}/goodsCate/edit?id=${id}`);
+            this.toolsService.error(res, '修改失败', `/${Config.adminPath}/goodsCate/edit?id=${id}`);
         }
     }
 
-    @Get('delete')  
-    async delete(@Query() query,@Response() res) {
-        let result = await this.goodsCateService.delete({ "_id": query.id });     
+    @Get('delete')
+    async delete(@Query() query, @Response() res) {
+        let result = await this.goodsCateService.delete({ "_id": query.id });
         this.toolsService.success(res, `/${Config.adminPath}/goodsCate`);
     }
 

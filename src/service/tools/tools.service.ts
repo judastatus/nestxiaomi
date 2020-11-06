@@ -15,6 +15,9 @@ import * as mkdirp from 'mkdirp';
 
 import { createWriteStream } from 'fs';
 
+//注意引入方法
+const Jimp = require('jimp');
+
 @Injectable()
 export class ToolsService {
     // 获取验证码
@@ -66,26 +69,62 @@ export class ToolsService {
           
         */
 
-        // 1、获取当前日期   20191013
-        let day = format(new Date(), 'YYYYMMDD');  //目录名称
-        let d = this.getTime();  //时间戳  当前图片的名称
+        if (file) {
 
-        // 2、根据日期创建目录
+            // 1、获取当前日期   20191013
+            let day = format(new Date(), 'YYYYMMDD');  //目录名称
 
-        let dir = join(__dirname, `../../../public/${Config.uploadDir}`, day);
-        mkdirp.sync(dir);
-        let uploadDir = join(dir, d + extname(file.originalname));
+            let d = this.getTime();  //时间戳  当前图片的名称
 
-        // 3、实现上传
 
-        const writeImage = createWriteStream(uploadDir);
-        writeImage.write(file.buffer);
+            // 2、根据日期创建目录
 
-        // 4、返回图片保存的地址
+            let dir = join(__dirname, `../../../public/${Config.uploadDir}`, day);
 
-        let saveDir = join(Config.uploadDir, day, d + extname(file.originalname));
+            mkdirp.sync(dir);
 
-        return saveDir;
+            let uploadDir = join(dir, d + extname(file.originalname));
 
+            // 3、实现上传
+
+            const writeImage = createWriteStream(uploadDir);
+            writeImage.write(file.buffer);
+
+            // 4、返回图片保存的地址
+
+            let saveDir = join(Config.uploadDir, day, d + extname(file.originalname));
+
+            return {
+                saveDir,
+                uploadDir
+            };
+
+        } else {
+            return {
+                saveDir: '',
+                uploadDir: ""
+            };;
+        }
+    }
+
+    jimpImg(target){
+
+        Jimp.read(target, (err, lenna) => {
+            if (err) throw err;
+            lenna
+            .resize(200, 200) // resize
+            .quality(90) // set JPEG quality
+            // .greyscale() // set greyscale
+            .write(target+"_200x200"+extname(target)); // save
+        });
+
+        Jimp.read(target, (err, lenna) => {
+            if (err) throw err;
+            lenna
+            .resize(100, 100) // resize
+            .quality(90) // set JPEG quality
+            // .greyscale() // set greyscale
+            .write(target+"_100x100"+extname(target)); // save
+        });
     }
 }
