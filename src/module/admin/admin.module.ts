@@ -1,3 +1,5 @@
+import { GoodsColorService } from './../../service/goods-color/goods-color.service';
+import { GoodsColorSchema } from './../../schema/goods_color.schema';
 import { GoodsService } from './../../service/goods/goods.service';
 import { GoodsSchema } from './../../schema/goods.schema';
 import { GoodsCateService } from './../../service/goods-cate/goods-cate.service';
@@ -42,10 +44,12 @@ import { GoodsController } from './goods/goods.controller';
     {name:'GoodsType', schema: GoodsTypeSchema,collection:"goods_type"} ,
     {name:'GoodsTypeAttribute', schema:GoodsTypeAttributeSchema, collection:'goods_type_attribute'},
     {name:'GoodsCate', schema:GoodsCateSchema, collection:'goods_cate'},
-    {name:'Goods', schema:GoodsSchema, collection:'goods'}
+    {name:'Goods', schema:GoodsSchema, collection:'goods'},
+    { name: 'GoodsColor', schema: GoodsColorSchema,collection:"goods_color"},
+
   ])],
   controllers: [MainController, LoginController, ManagerController, RoleController, AccessController, FocusController, GoodsTypeController, GoodsTypeAttributeController, GoodsCateController, GoodsController],
-  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService,FocusService, GoodsTypeService,GoodsTypeAttributeService,GoodsCateService, GoodsService],
+  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService,FocusService, GoodsTypeService,GoodsTypeAttributeService,GoodsCateService, GoodsService, GoodsColorService],
   exports:[AdminService,RoleService,AccessService,RoleAccessService]
 })
 export class AdminModule {}
