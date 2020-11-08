@@ -67,11 +67,17 @@ export class GoodsController {
 
     }
 
-    //富文本编辑器上传图片
+    //富文本编辑器上传图片  图库上传图片
     @Post("doImageUpload")
     @UseInterceptors(FileInterceptor('file'))
     async doUpload(@UploadedFile() file){
-        let {saveDir}=this.toolsService.uploadFile(file);      
+        let {saveDir,uploadDir}=this.toolsService.uploadFile(file);     
+        
+        console.log(uploadDir);
+        //缩略图
+        if (uploadDir) {                
+            this.toolsService.jimpImg(uploadDir);
+        }
         return {link: '/'+saveDir};
     }
 
@@ -93,6 +99,7 @@ export class GoodsController {
     @Post("doAdd")
     @UseInterceptors(FileInterceptor('goods_img'))
     async doAdd(@Body() body,@UploadedFile() file){
+        
         console.log(body);
 
         return body;
