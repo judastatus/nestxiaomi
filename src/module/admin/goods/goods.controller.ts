@@ -28,9 +28,15 @@ export class GoodsController {
 
     @Get()
     @Render('admin/goods/index')
-    index() {
+    @Render('admin/goods/index')
+    async index() {
 
-        return {};
+       //分页   搜索商品数据
+
+       var goodsResult=await this.goodsService.find();      
+       return {
+           goodsList:goodsResult
+       }
     }
 
     @Get('add')
@@ -182,4 +188,131 @@ export class GoodsController {
   */
 
     }
+
+    @Get('edit')
+    @Render('admin/goods/edit')
+    async edit(@Query() query) {
+
+        /*
+        1、获取商品数据
+
+        2、获取商品分类
+
+        3、获取所有颜色 以及选中的颜色
+
+        4、商品的图库信息
+
+        5、获取商品类型
+
+        6、获取规格信息
+        */
+
+        //1、获取商品数据
+        var goodsResult=await this.goodsService.find({"_id":query.id});
+
+        console.log(goodsResult);
+
+        //2、获取商品分类
+        let goodsCateResult = await this.goodsCateService.getModel().aggregate([
+            {
+                $lookup: {
+                    from: 'goods_cate',
+                    localField: '_id',
+                    foreignField: 'pid',
+                    as: 'items'
+                }
+            },
+            {
+                $match: {
+                    "pid": '0'
+                }
+            }
+        ]);
+
+        //3、获取所有颜色  以及选中的颜色
+        let goodsColorResult = await this.goodsColorService.find({});          
+        //goodsColorResult是不可改变对象   
+        //不可改变对象：我们可以通过序列化和反序列化来改变它里面的属性 
+        goodsColorResult=JSON.parse(JSON.stringify(goodsColorResult));
+
+        if(goodsResult[0].goods_color){
+            var tempColorArr=goodsResult[0].goods_color.split(',');           
+            for(var i=0;i<goodsColorResult.length;i++){
+                if(tempColorArr.indexOf(goodsColorResult[i]._id.toString())!=-1){
+                    goodsColorResult[i].checked=true;
+                }
+            }
+        }
+
+        console.log(goodsColorResult);
+
+
+
+        //4、商品的图库信息
+
+        let goodsImageResult = await this.goodsImageService.find({ goods_id: goodsResult[0]._id });
+
+
+        //5、获取商品类型
+        let goodsTypeResult = await this.goodsTypeService.find({});
+
+
+        //6、获取规格信息  商品类型属性
+
+        let goodsAttrResult = await this.goodsAttrService.find({ goods_id: goodsResult[0]._id });
+
+     
+        let goodsAttrStr = '';
+
+        goodsAttrResult.forEach(async val => {
+
+            if (val.attribute_type == 1) {
+
+                goodsAttrStr += `<li><span>${val.attribute_title}: 　</span><input type="hidden" name="attr_id_list" value="${val.attribute_id}" />  <input type="text" name="attr_value_list"  value="${val.attribute_value}" /></li>`;
+            } else if (val.attribute_type == 2) {
+                goodsAttrStr += `<li><span>${val.attribute_title}: 　</span><input type="hidden" name="attr_id_list" value="${val.attribute_id}" />  <textarea cols="50" rows="3" name="attr_value_list">${val.attribute_value}</textarea></li>`;
+            } else {
+                // 获取 attr_value  获取可选值列表
+                const oneGoodsTypeAttributeResult = await this.goodsTypeAttributeService.find({
+                    _id: val.attribute_id,
+                });
+
+              
+
+                const arr = oneGoodsTypeAttributeResult[0].attr_value.split('\n');
+
+                goodsAttrStr += `<li><span>${val.attribute_title}: 　</span><input type="hidden" name="attr_id_list" value="${val.attribute_id}" />`;
+
+                goodsAttrStr += '<select name="attr_value_list">';
+
+                for (let j = 0; j < arr.length; j++) {
+
+                    if (arr[j] == val.attribute_value) {
+                        goodsAttrStr += `<option value="${arr[j]}" selected >${arr[j]}</option>`;
+                    } else {
+                        goodsAttrStr += `<option value="${arr[j]}" >${arr[j]}</option>`;
+                    }
+                   
+                }
+                goodsAttrStr += '</select>';
+                goodsAttrStr += '</li>';
+            }
+
+        });
+
+
+
+
+        return {
+            goodsCate: goodsCateResult,
+            goodsColor: goodsColorResult,
+            goodsType: goodsTypeResult,
+            goods: goodsResult[0],
+            goodsAttr: goodsAttrStr,
+            goodsImage: goodsImageResult       
+        }
+    }
+
+
+    
 }
