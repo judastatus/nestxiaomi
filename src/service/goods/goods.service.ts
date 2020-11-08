@@ -19,6 +19,7 @@ export class GoodsService {
             var result=await access.save();
             return result;
         } catch (error) {
+            console.log(error);
             return null;
         }
     }
