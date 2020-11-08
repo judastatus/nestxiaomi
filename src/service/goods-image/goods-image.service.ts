@@ -45,6 +45,15 @@ export class GoodsImageService {
         }
     }
 
+    async deleteMany(json:GoodsImageInterface){
+        try {
+            var result=await this.goodsImageModel.deleteMany(json);          
+            return result;
+        } catch (error) {
+            return null;
+        }
+    }
+
     getModel(){
        return this.goodsImageModel;
     }

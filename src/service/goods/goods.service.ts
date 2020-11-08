@@ -5,9 +5,17 @@ import {GoodsInterface} from '../../interface/goods.interface'
 export class GoodsService {
     constructor(@InjectModel('Goods') private readonly goodsModel) {}
 
-    async find(json:GoodsInterface={},fields?:string){
+    async find(json:GoodsInterface={},skip=0,limit=0,fields?:string){
         try {
-            return await this.goodsModel.find(json,fields);
+            return await this.goodsModel.find(json,fields).skip(skip).limit(limit);
+        } catch (error) {
+            return [];
+        }       
+    }
+
+    async count(json:GoodsInterface={}){
+        try {
+            return await this.goodsModel.find(json).count();
         } catch (error) {
             return [];
         }       

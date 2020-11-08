@@ -12,6 +12,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Controller, Get, Render, Post, Body, Query, Response, UseInterceptors, UploadedFile } from '@nestjs/common';
 import * as mongoose from 'mongoose';
+import { query } from 'express';
 
 @Controller(`${Config.adminPath}/goods`)
 export class GoodsController {
@@ -30,14 +31,23 @@ export class GoodsController {
     @Get()
     @Render('admin/goods/index')
     @Render('admin/goods/index')
-    async index() {
+    async index(@Query() query) {
+        //分页   搜索商品数据
 
-       //分页   搜索商品数据
+        let page = query.page || 1;
+        let pageSize = 3;
+        let skip = (page - 1) * pageSize;
+        let goodsResult = await this.goodsService.find({}, skip, pageSize);
 
-       var goodsResult=await this.goodsService.find();      
-       return {
-           goodsList:goodsResult
-       }
+        let count = await this.goodsService.count();
+
+        let totalPages = Math.ceil(count / pageSize);
+        // totalPages
+        return {
+            goodsList: goodsResult,
+            page: page,
+            totalPages: totalPages
+        }
     }
 
     @Get('add')
@@ -111,22 +121,22 @@ export class GoodsController {
     @UseInterceptors(FileInterceptor('goods_img'))
     async doAdd(@Body() body, @UploadedFile() file, @Response() res) {
 
-        let {saveDir}=this.toolsService.uploadFile(file);  
+        let { saveDir } = this.toolsService.uploadFile(file);
         //1、增加商品数据
-        if(body.goods_color && typeof(body.goods_color)!=='string'){
-            body.goods_color=body.goods_color.join(',');
-        }        
-        var result= await this.goodsService.add(Object.assign(body,{
-            goods_img:saveDir
-        }));        
+        if (body.goods_color && typeof (body.goods_color) !== 'string') {
+            body.goods_color = body.goods_color.join(',');
+        }
+        var result = await this.goodsService.add(Object.assign(body, {
+            goods_img: saveDir
+        }));
 
         //2、增加图库
         let goods_image_list = body.goods_image_list;
-        if(result._id && goods_image_list && typeof(goods_image_list)!=='string'){
-            for(var i=0;i<goods_image_list.length;i++){
+        if (result._id && goods_image_list && typeof (goods_image_list) !== 'string') {
+            for (var i = 0; i < goods_image_list.length; i++) {
                 await this.goodsImageService.add({
-                    goods_id:result._id,
-                    img_url:goods_image_list[i]
+                    goods_id: result._id,
+                    img_url: goods_image_list[i]
                 })
             }
         }
@@ -209,7 +219,7 @@ export class GoodsController {
         */
 
         //1、获取商品数据
-        var goodsResult=await this.goodsService.find({"_id":query.id});
+        var goodsResult = await this.goodsService.find({ "_id": query.id });
 
         console.log(goodsResult);
 
@@ -231,16 +241,16 @@ export class GoodsController {
         ]);
 
         //3、获取所有颜色  以及选中的颜色
-        let goodsColorResult = await this.goodsColorService.find({});          
+        let goodsColorResult = await this.goodsColorService.find({});
         //goodsColorResult是不可改变对象   
         //不可改变对象：我们可以通过序列化和反序列化来改变它里面的属性 
-        goodsColorResult=JSON.parse(JSON.stringify(goodsColorResult));
+        goodsColorResult = JSON.parse(JSON.stringify(goodsColorResult));
 
-        if(goodsResult[0].goods_color){
-            var tempColorArr=goodsResult[0].goods_color.split(',');           
-            for(var i=0;i<goodsColorResult.length;i++){
-                if(tempColorArr.indexOf(goodsColorResult[i]._id.toString())!=-1){
-                    goodsColorResult[i].checked=true;
+        if (goodsResult[0].goods_color) {
+            var tempColorArr = goodsResult[0].goods_color.split(',');
+            for (var i = 0; i < goodsColorResult.length; i++) {
+                if (tempColorArr.indexOf(goodsColorResult[i]._id.toString()) != -1) {
+                    goodsColorResult[i].checked = true;
                 }
             }
         }
@@ -262,7 +272,7 @@ export class GoodsController {
 
         let goodsAttrResult = await this.goodsAttrService.find({ goods_id: goodsResult[0]._id });
 
-     
+
         let goodsAttrStr = '';
 
         goodsAttrResult.forEach(async val => {
@@ -278,7 +288,7 @@ export class GoodsController {
                     _id: val.attribute_id,
                 });
 
-              
+
 
                 const arr = oneGoodsTypeAttributeResult[0].attr_value.split('\n');
 
@@ -293,7 +303,7 @@ export class GoodsController {
                     } else {
                         goodsAttrStr += `<option value="${arr[j]}" >${arr[j]}</option>`;
                     }
-                   
+
                 }
                 goodsAttrStr += '</select>';
                 goodsAttrStr += '</li>';
@@ -310,7 +320,7 @@ export class GoodsController {
             goodsType: goodsTypeResult,
             goods: goodsResult[0],
             goodsAttr: goodsAttrStr,
-            goodsImage: goodsImageResult       
+            goodsImage: goodsImageResult
         }
     }
 
@@ -322,8 +332,8 @@ export class GoodsController {
 
         console.log(body);
 
-        
-//1、修改商品数据        
+
+        //1、修改商品数据        
         let goods_id = body._id;
         //注意 goods_color的类型
         if (body.goods_color && typeof (body.goods_color) !== 'string') {
@@ -343,7 +353,7 @@ export class GoodsController {
             }, body);
         }
 
-//2、修改图库数据 （增加）
+        //2、修改图库数据 （增加）
 
         let goods_image_list = body.goods_image_list;
         if (goods_id && goods_image_list && typeof (goods_image_list) !== 'string') {
@@ -354,12 +364,12 @@ export class GoodsController {
                 })
             }
         }
-       
-// 3、修改商品类型属性数据         1、删除当前商品id对应的类型属性  2、执行增加
+
+        // 3、修改商品类型属性数据         1、删除当前商品id对应的类型属性  2、执行增加
 
 
         // 3.1 删除当前商品id对应的类型属性
-        await this.goodsAttrService.deleteMany({"goods_id":goods_id})
+        await this.goodsAttrService.deleteMany({ "goods_id": goods_id })
 
         // 3.2 执行增加
         let attr_id_list = body.attr_id_list;
@@ -370,10 +380,10 @@ export class GoodsController {
                 //获取当前 商品类型id对应的商品类型属性
                 let goodsTypeAttributeResult = await this.goodsTypeAttributeService.find({ _id: attr_id_list[i] });
                 await this.goodsAttrService.add({
-                    goods_id: goods_id,                    
+                    goods_id: goods_id,
                     goods_cate_id: body.goods_cate_id,   //分类id
                     attribute_id: attr_id_list[i],
-                    attribute_type: goodsTypeAttributeResult[0].attr_type,                   
+                    attribute_type: goodsTypeAttributeResult[0].attr_type,
                     attribute_title: goodsTypeAttributeResult[0].title,
                     attribute_value: attr_value_list[i],
                 })
@@ -385,17 +395,17 @@ export class GoodsController {
     }
 
 
-    @Get("changeGoodsImageColor")  
+    @Get("changeGoodsImageColor")
     async changeGoodsImageColor(@Query() query) {
-        
-        let color_id=query.color_id;
-        let goods_image_id=query.goods_image_id;
-        if(color_id){  //注意
-            color_id=mongoose.Types.ObjectId(color_id);
+
+        let color_id = query.color_id;
+        let goods_image_id = query.goods_image_id;
+        if (color_id) {  //注意
+            color_id = mongoose.Types.ObjectId(color_id);
         }
-        let result= await this.goodsImageService.update({
-            "_id":goods_image_id
-        },{"color_id":color_id});
+        let result = await this.goodsImageService.update({
+            "_id": goods_image_id
+        }, { "color_id": color_id });
         if (result) {
             return { success: true, message: '更新数据成功' };
         } else {
@@ -405,13 +415,13 @@ export class GoodsController {
     }
 
 
-    @Get("removeGoodsImage")  
+    @Get("removeGoodsImage")
     async removeGoodsImage(@Query() query) {
-               
-        let goods_image_id=query.goods_image_id;
-     
-        let result= await this.goodsImageService.delete({
-            "_id":goods_image_id
+
+        let goods_image_id = query.goods_image_id;
+
+        let result = await this.goodsImageService.delete({
+            "_id": goods_image_id
         });
         if (result) {
             return { success: true, message: '删除数据成功' };
@@ -419,6 +429,19 @@ export class GoodsController {
             return { success: false, message: '删除数据失败' };
         }
 
+    }
+
+    //注意：建议软删除
+
+    @Get('delete')
+    async delete(@Query() query, @Response() res) {
+        let result = await this.goodsService.delete({ "_id": query.id });
+        if (result.ok == 1) {
+            await this.goodsAttrService.deleteMany({ "goods_id": query.id });
+
+            await this.goodsImageService.deleteMany({ "goods_id": query.id });
+        }
+        this.toolsService.success(res, `/${Config.adminPath}/goods`);
     }
 
 }
