@@ -11,6 +11,7 @@ import { Config } from './../../../config/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Controller, Get, Render, Post, Body, Query, Response, UseInterceptors, UploadedFile } from '@nestjs/common';
+import * as mongoose from 'mongoose';
 
 @Controller(`${Config.adminPath}/goods`)
 export class GoodsController {
@@ -384,5 +385,40 @@ export class GoodsController {
     }
 
 
+    @Get("changeGoodsImageColor")  
+    async changeGoodsImageColor(@Query() query) {
+        
+        let color_id=query.color_id;
+        let goods_image_id=query.goods_image_id;
+        if(color_id){  //注意
+            color_id=mongoose.Types.ObjectId(color_id);
+        }
+        let result= await this.goodsImageService.update({
+            "_id":goods_image_id
+        },{"color_id":color_id});
+        if (result) {
+            return { success: true, message: '更新数据成功' };
+        } else {
+            return { success: false, message: '更新数据失败' };
+        }
+
+    }
+
+
+    @Get("removeGoodsImage")  
+    async removeGoodsImage(@Query() query) {
+               
+        let goods_image_id=query.goods_image_id;
+     
+        let result= await this.goodsImageService.delete({
+            "_id":goods_image_id
+        });
+        if (result) {
+            return { success: true, message: '删除数据成功' };
+        } else {
+            return { success: false, message: '删除数据失败' };
+        }
+
+    }
 
 }

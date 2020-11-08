@@ -183,8 +183,9 @@
                                                                             <option value="0">关联颜色</option>
              
                                                                             <%for(var j=0;j<goodsColor.length;j++){%>
-                
+                                                                                  <%if(goodsColor[j].checked){%> 
                                                                                  <option value="<%=goodsColor[j]._id%>" <%if(goodsImage[i].color_id.toString()==goodsColor[j]._id){%>selected<%}%>  ><%=goodsColor[j].color_name%></option>
+                                                                                 <%}%>
                                                                             <%}%>
                                                                         </select>                                                        
                                                                     </div>
@@ -285,6 +286,32 @@
             }
         });
 
+        //更新图库对应的颜色
+        $(".relation_goods_color").change(function(){         
+           var color_id= $(this).val();
+           var goods_image_id=$(this).attr('goods_image_id');
+
+           $.get('/<%=config.adminPath%>/goods/changeGoodsImageColor',{color_id:color_id,goods_image_id:goods_image_id},function(response){
+             console.log(response);
+           });
+        })
+
+        //删除图片信息
+        $(".goods_image_delete").click(function(){ 
+
+           var flag=confirm('您确定要删除吗?');
+            if(flag){
+                var goods_image_id=$(this).attr('goods_image_id');
+                var _that=this;
+
+                $.get('/<%=config.adminPath%>/goods/removeGoodsImage',{goods_image_id:goods_image_id},function(response){
+                    if(response.success){
+                        $(_that).parent().remove();
+                    }
+                });
+
+            }
+        })
 
     })
 
