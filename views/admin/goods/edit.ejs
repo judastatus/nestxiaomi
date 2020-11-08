@@ -23,6 +23,8 @@
             <div class="panel-body">
                 <div class="table-responsive input-form goods_content">
                     <form action="/<%=config.adminPath%>/goods/doEdit" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" name="_id" value="<%=goods._id%>" />
                             <!-- Nav tabs -->
                             <ul class="nav nav-tabs" role="tablist">
                                     <li role="presentation" class="active"><a href="#general"  role="tab" data-toggle="tab">通用信息</a></li>
@@ -57,7 +59,7 @@
                                                 </li>
                                                 <li> <span> 商品图片:</span> 
                                                     <input type="file" name="goods_img"/>                                        
-                                                    <br>   <img class="pic" src="<%=goods.goods_img%>" />
+                                                    <br>   <img class="pic" src="/<%=goods.goods_img%>" />
                                                </li> 
                                                <li>  <span>商品价格:</span> <input type="text" name="shop_price" value="<%=goods.shop_price%>"/></li>
                                                <li>  <span>商品原价:</span>  <input type="text" name="market_price" value="<%=goods.market_price%>"/></li>
@@ -149,7 +151,7 @@
         
                                                         <option value="0">--请选择商品类型--</option>
                                                         <%for(var i=0;i<goodsType.length;i++){%>
-                                                                <option value="<%=goodsType[i]._id%>"><%=goodsType[i].title%></option>
+                                                                <option value="<%=goodsType[i]._id%>" <%if(goods.goods_type_id && goods.goods_type_id.toString()==goodsType[i]._id.toString()){%>selected<%}%>  ><%=goodsType[i].title%></option>
                                                         <%}%>
                                                        
         

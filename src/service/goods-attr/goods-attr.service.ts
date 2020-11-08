@@ -42,6 +42,15 @@ export class GoodsAttrService {
         }
     }
 
+    async deleteMany(json:GoodsAttrInterface){
+        try {
+            var result=await this.goodsAttrModel.deleteMany(json);          
+            return result;
+        } catch (error) {
+            return null;
+        }
+    }
+
     getModel(){
        return this.goodsAttrModel;
     }

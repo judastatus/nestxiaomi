@@ -314,5 +314,75 @@ export class GoodsController {
     }
 
 
-    
+    //执行增加
+    @Post("doEdit")
+    @UseInterceptors(FileInterceptor('goods_img'))
+    async doEdit(@Body() body, @UploadedFile() file, @Response() res) {
+
+        console.log(body);
+
+        
+//1、修改商品数据        
+        let goods_id = body._id;
+        //注意 goods_color的类型
+        if (body.goods_color && typeof (body.goods_color) !== 'string') {
+            body.goods_color = body.goods_color.join(',');
+        }
+
+        if (file) {
+            let { saveDir } = this.toolsService.uploadFile(file);
+            await this.goodsService.update({
+                "_id": goods_id
+            }, Object.assign(body, {
+                goods_img: saveDir
+            }));
+        } else {
+            await this.goodsService.update({
+                "_id": goods_id
+            }, body);
+        }
+
+//2、修改图库数据 （增加）
+
+        let goods_image_list = body.goods_image_list;
+        if (goods_id && goods_image_list && typeof (goods_image_list) !== 'string') {
+            for (var i = 0; i < goods_image_list.length; i++) {
+                await this.goodsImageService.add({
+                    goods_id: goods_id,
+                    img_url: goods_image_list[i]
+                })
+            }
+        }
+       
+// 3、修改商品类型属性数据         1、删除当前商品id对应的类型属性  2、执行增加
+
+
+        // 3.1 删除当前商品id对应的类型属性
+        await this.goodsAttrService.deleteMany({"goods_id":goods_id})
+
+        // 3.2 执行增加
+        let attr_id_list = body.attr_id_list;
+        let attr_value_list = body.attr_value_list;
+        if (goods_id && attr_id_list && typeof (attr_id_list) !== 'string') {
+
+            for (var i = 0; i < attr_id_list.length; i++) {
+                //获取当前 商品类型id对应的商品类型属性
+                let goodsTypeAttributeResult = await this.goodsTypeAttributeService.find({ _id: attr_id_list[i] });
+                await this.goodsAttrService.add({
+                    goods_id: goods_id,                    
+                    goods_cate_id: body.goods_cate_id,   //分类id
+                    attribute_id: attr_id_list[i],
+                    attribute_type: goodsTypeAttributeResult[0].attr_type,                   
+                    attribute_title: goodsTypeAttributeResult[0].title,
+                    attribute_value: attr_value_list[i],
+                })
+            }
+
+        }
+        this.toolsService.success(res, `/${Config.adminPath}/goods`);
+
+    }
+
+
+
 }
