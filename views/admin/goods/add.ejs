@@ -1,10 +1,8 @@
 <%- include ("../public/page_header")%>
 
-<link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet"
-    type="text/css" />
+<link href="/admin/wysiwyg-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
 
-<script type="text/javascript"
-    src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
+<script type="text/javascript" src="/admin/wysiwyg-editor/js/froala_editor.pkgd.min.js"></script>
 
 
 <script type="text/javascript" src="/admin/wysiwyg-editor/js/zh_cn.js"></script>
@@ -171,8 +169,9 @@
     new FroalaEditor('#content', {
         height: 300,
         language: 'zh_cn',
-        toolbarButtons: [['bold', 'strikethrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting', 'insertTable', 'html'], ['undo', 'redo']],
-        toolbarButtonsXS: [['bold', 'strikethrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting', 'insertTable', 'html'], ['undo', 'redo']],
+        imageUploadURL: '/<%=config.adminPath%>/goods/doUpload'
+        // toolbarButtons: [['bold', 'strikethrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting', 'insertTable', 'html'], ['undo', 'redo']],
+        // toolbarButtonsXS: [['bold', 'strikethrough', 'subscript', 'superscript', 'outdent', 'indent', 'clearFormatting', 'insertTable', 'html'], ['undo', 'redo']],
     });
 
 

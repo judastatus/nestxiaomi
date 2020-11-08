@@ -1,7 +1,10 @@
 import { ToolsService } from './../../../service/tools/tools.service';
 import { GoodsService } from './../../../service/goods/goods.service';
 import { Config } from './../../../config/config';
-import { Controller, Get,Render } from '@nestjs/common';
+
+import { FileInterceptor} from '@nestjs/platform-express';
+
+import { Controller, Get,Render,Post, UseInterceptors, UploadedFile } from '@nestjs/common';
 
 @Controller(`${Config.adminPath}/goods`)
 export class GoodsController {
@@ -28,5 +31,12 @@ export class GoodsController {
         return {}
 
 
+    }
+
+    @Post("doUpload")
+    @UseInterceptors(FileInterceptor('file'))
+    async doUpload(@UploadedFile() file){
+        let {saveDir}=this.toolsService.uploadFile(file);      
+        return {link: '/'+saveDir};
     }
 }
