@@ -1,11 +1,18 @@
 <%- include ("../public/page_header")%>
 
+<!-- 富文本编辑器 -->
 <link href="/admin/wysiwyg-editor/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-
 <script type="text/javascript" src="/admin/wysiwyg-editor/js/froala_editor.pkgd.min.js"></script>
-
-
 <script type="text/javascript" src="/admin/wysiwyg-editor/js/zh_cn.js"></script>
+
+<!-- 上传图片 -->
+<link rel="stylesheet" type="text/css" href="/admin/webuploader/css/webuploader.css">
+<link rel="stylesheet" type="text/css" href="/admin/webuploader/css/diyUpload.css">
+<script type="text/javascript" src="/admin/webuploader/js/webuploader.html5only.min.js"></script>
+<script type="text/javascript" src="/admin/webuploader/js/diyUpload.js"></script>
+
+
+
 <div class="container-fluid">
     <div class="row">
        
@@ -65,7 +72,7 @@
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="detail">
         
-                                    <textarea name="content" id="content" cols="100" rows="8"></textarea>
+                                    <textarea name="goods_content" id="content" cols="100" rows="8"></textarea>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="mix">
                                         
@@ -142,7 +149,13 @@
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="photo">
         
-                                        商品相册
+                                        <div class="photoUploader" id="photoUploader">
+
+                                        </div>
+
+                                        <div class="photoList" id="photoList">
+
+                                        </div>
                                 </div>
                             </div>
                              
@@ -210,6 +223,24 @@
     })
 
 
+    $(function () {
+
+        $('#photoUploader').diyUpload({
+            url: '/<%=config.adminPath%>/goods/doImageUpload',
+            success: function (response) {
+                
+                var photoStr='<input type="hidden" name="goods_image_list[]" value='+response.link+' />';
+
+                $('#photoList').append(photoStr);
+
+            },
+            error: function (err) {
+                console.info(err);
+            }
+        });
+
+
+    })
 
 
 </script>
