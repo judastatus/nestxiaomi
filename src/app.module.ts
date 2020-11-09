@@ -7,11 +7,13 @@ import { ApiModule } from './module/api/api.module';
 import { MongooseModule} from '@nestjs/mongoose'
 //配置中间件
 import {AdminauthMiddleware} from './middleware/adminauth.middleware'
+import { PublicModule } from './module/public/public.module';
 
 
 @Module({
   imports: [AdminModule, DefaultModule, ApiModule,
-  MongooseModule.forRoot('mongodb://127.0.0.1:27017/nestxiaomi', {useNewUrlParser:true})
+  MongooseModule.forRoot('mongodb://127.0.0.1:27017/nestxiaomi', {useNewUrlParser:true}),
+  PublicModule
   ],
   controllers: [],
   providers: [],
