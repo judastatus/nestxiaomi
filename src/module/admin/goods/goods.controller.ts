@@ -10,7 +10,7 @@ import { Config } from './../../../config/config';
 
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { Controller, Get, Render, Post, Body, Query, Response, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Render, Post, Body, Request, Query, Response, UseInterceptors, UploadedFile } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { query } from 'express';
 
@@ -202,7 +202,7 @@ export class GoodsController {
 
     @Get('edit')
     @Render('admin/goods/edit')
-    async edit(@Query() query) {
+    async edit(@Request() req, @Query() query) {
 
         /*
         1、获取商品数据
@@ -217,6 +217,8 @@ export class GoodsController {
 
         6、获取规格信息
         */
+
+        //获取上一页的地址  req.prevPage 
 
         //1、获取商品数据
         var goodsResult = await this.goodsService.find({ "_id": query.id });
@@ -320,7 +322,8 @@ export class GoodsController {
             goodsType: goodsTypeResult,
             goods: goodsResult[0],
             goodsAttr: goodsAttrStr,
-            goodsImage: goodsImageResult
+            goodsImage: goodsImageResult,
+            prevPage: req.prevPage  //上一页的地址
         }
     }
 
@@ -332,6 +335,8 @@ export class GoodsController {
 
         console.log(body);
 
+        //0、获取edit传过来的上一页地址
+        let prevPage = body.prevPage || `/${Config.adminPath}/goods`;
 
         //1、修改商品数据        
         let goods_id = body._id;
@@ -390,7 +395,7 @@ export class GoodsController {
             }
 
         }
-        this.toolsService.success(res, `/${Config.adminPath}/goods`);
+        this.toolsService.success(res, prevPage);
 
     }
 
@@ -433,15 +438,17 @@ export class GoodsController {
 
     //注意：建议软删除
 
-    @Get('delete')
-    async delete(@Query() query, @Response() res) {
-        let result = await this.goodsService.delete({ "_id": query.id });
-        if (result.ok == 1) {
+    @Get('delete')  
+    async delete(@Request() req,@Query() query,@Response() res) {
+        let result = await this.goodsService.delete({ "_id": query.id });         
+        if(result.ok==1){
             await this.goodsAttrService.deleteMany({ "goods_id": query.id });
 
             await this.goodsImageService.deleteMany({ "goods_id": query.id });
-        }
-        this.toolsService.success(res, `/${Config.adminPath}/goods`);
+        }     
+
+        let prevPage=req.prevPage ||  `/${Config.adminPath}/goods`;
+        this.toolsService.success(res, prevPage);
     }
 
 }
