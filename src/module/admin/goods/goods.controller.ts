@@ -32,22 +32,29 @@ export class GoodsController {
     @Render('admin/goods/index')
     @Render('admin/goods/index')
     async index(@Query() query) {
-        //分页   搜索商品数据
+       //分页   搜索商品数据
 
-        let page = query.page || 1;
-        let pageSize = 3;
-        let skip = (page - 1) * pageSize;
-        let goodsResult = await this.goodsService.find({}, skip, pageSize);
+       let keyword=query.keyword;
+       console.log(keyword);
+       //条件
+       let json={};
+       if(keyword){
+           json=Object.assign(json,{"title":{ $regex: new RegExp(keyword)}});
+       }      
 
-        let count = await this.goodsService.count();
-
-        let totalPages = Math.ceil(count / pageSize);
-        // totalPages
-        return {
-            goodsList: goodsResult,
-            page: page,
-            totalPages: totalPages
-        }
+       let page=query.page || 1;
+       let pageSize=3;
+       let skip=(page-1)*pageSize;
+       let goodsResult = await this.goodsService.find(json,skip,pageSize);
+       let count=await this.goodsService.count(json);
+       let totalPages=Math.ceil(count/pageSize);  
+   
+       return {
+           goodsList: goodsResult,
+           page:page,
+           totalPages:totalPages,
+           keyword:keyword
+       }
     }
 
     @Get('add')
