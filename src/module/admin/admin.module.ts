@@ -1,3 +1,5 @@
+import { SettingService } from './../../service/setting/setting.service';
+import { SettingSchema } from './../../schema/setting.schema';
 import { NavSchema } from './../../schema/nav.schema';
 import { NavService } from './../../service/nav/nav.service';
 import { GoodsAttrSchema } from './../../schema/goods_attr.schema';
@@ -39,6 +41,7 @@ import { GoodsTypeAttributeController } from './goods-type-attribute/goods-type-
 import { GoodsCateController } from './goods-cate/goods-cate.controller';
 import { GoodsController } from './goods/goods.controller';
 import { NavController } from './nav/nav.controller';
+import { SettingController } from './setting/setting.controller';
 
 
 @Module({
@@ -55,10 +58,11 @@ import { NavController } from './nav/nav.controller';
     { name: 'GoodsColor', schema: GoodsColorSchema,collection:"goods_color"},
     { name: 'GoodsImage', schema: GoodsImageSchema,collection:"goods_image"},
     { name: 'GoodsAttr', schema: GoodsAttrSchema,collection:"goods_attr"},
-    { name: 'Nav', schema: NavSchema,collection:"nav"} 
+    { name: 'Nav', schema: NavSchema,collection:"nav"} ,
+    { name: 'Setting', schema: SettingSchema,collection:"setting"} 
   ])],
-  controllers: [MainController, LoginController, ManagerController, RoleController, AccessController, FocusController, GoodsTypeController, GoodsTypeAttributeController, GoodsCateController, GoodsController, NavController],
-  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService,FocusService, GoodsTypeService,GoodsTypeAttributeService,GoodsCateService, GoodsService, GoodsColorService, GoodsImageService,GoodsAttrService,NavService],
+  controllers: [MainController, LoginController, ManagerController, RoleController, AccessController, FocusController, GoodsTypeController, GoodsTypeAttributeController, GoodsCateController, GoodsController, NavController, SettingController],
+  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService,FocusService, GoodsTypeService,GoodsTypeAttributeService,GoodsCateService, GoodsService, GoodsColorService, GoodsImageService,GoodsAttrService,NavService, SettingService],
   exports:[AdminService,RoleService,AccessService,RoleAccessService]
 })
 export class AdminModule {}
