@@ -6,9 +6,9 @@ import {NavInterface} from '../../interface/nav.interface'
 export class NavService {
     constructor(@InjectModel('Nav') private readonly navModel) {}
     
-    async find(json:NavInterface={},skip=0,limit=0,fields?:string){
+    async find(json:NavInterface={},skip=0,limit=0,sort={},fields?:string){
         try {
-            return await this.navModel.find(json,fields).skip(skip).limit(limit);
+            return await this.navModel.find(json,fields).skip(skip).limit(limit).sort(sort);
         } catch (error) {
             return [];
         }       
