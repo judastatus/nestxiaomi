@@ -1,3 +1,5 @@
+import { NavSchema } from './../../schema/nav.schema';
+import { NavService } from './../../service/nav/nav.service';
 import { GoodsAttrSchema } from './../../schema/goods_attr.schema';
 import { GoodsImageSchema } from './../../schema/goods_image.schema';
 import { GoodsAttrService } from './../../service/goods-attr/goods-attr.service';
@@ -36,6 +38,7 @@ import { GoodsTypeController } from './goods-type/goods-type.controller';
 import { GoodsTypeAttributeController } from './goods-type-attribute/goods-type-attribute.controller';
 import { GoodsCateController } from './goods-cate/goods-cate.controller';
 import { GoodsController } from './goods/goods.controller';
+import { NavController } from './nav/nav.controller';
 
 
 @Module({
@@ -52,9 +55,10 @@ import { GoodsController } from './goods/goods.controller';
     { name: 'GoodsColor', schema: GoodsColorSchema,collection:"goods_color"},
     { name: 'GoodsImage', schema: GoodsImageSchema,collection:"goods_image"},
     { name: 'GoodsAttr', schema: GoodsAttrSchema,collection:"goods_attr"},
+    { name: 'Nav', schema: NavSchema,collection:"nav"} 
   ])],
-  controllers: [MainController, LoginController, ManagerController, RoleController, AccessController, FocusController, GoodsTypeController, GoodsTypeAttributeController, GoodsCateController, GoodsController],
-  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService,FocusService, GoodsTypeService,GoodsTypeAttributeService,GoodsCateService, GoodsService, GoodsColorService, GoodsImageService,GoodsAttrService],
+  controllers: [MainController, LoginController, ManagerController, RoleController, AccessController, FocusController, GoodsTypeController, GoodsTypeAttributeController, GoodsCateController, GoodsController, NavController],
+  providers:[ToolsService, AdminService, RoleService, AccessService, RoleAccessService,FocusService, GoodsTypeService,GoodsTypeAttributeService,GoodsCateService, GoodsService, GoodsColorService, GoodsImageService,GoodsAttrService,NavService],
   exports:[AdminService,RoleService,AccessService,RoleAccessService]
 })
 export class AdminModule {}

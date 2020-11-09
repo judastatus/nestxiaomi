@@ -1,3 +1,4 @@
+import { NavService } from './../../../service/nav/nav.service';
 import { GoodsCateService } from './../../../service/goods-cate/goods-cate.service';
 import { GoodsTypeAttributeService } from './../../../service/goods-type-attribute/goods-type-attribute.service';
 import { GoodsTypeService } from './../../../service/goods-type/goods-type.service';
@@ -12,7 +13,8 @@ export class MainController {
 
     constructor(private accessService: AccessService, private roleAccessService: RoleAccessService, private focusService: FocusService,private goodsTypeService:GoodsTypeService,
         private goodsTypeAttributeService:GoodsTypeAttributeService,
-        private goodsCateService:GoodsCateService) {
+        private goodsCateService:GoodsCateService,
+        private navService: NavService) {
 
     }
     
